@@ -1,0 +1,55 @@
+eslintrc.js - 개발자들이 특정한 규칙을 갖고 코드를 깔끔하게 빌드할 수 있게 도와주는 라이브러리
+              타입스크립트를 쓰는 가이드라인 제시, 문법에 오류가 나면 알려주는 역할 등등
+prettierrc - 주로 코드 형식을 맞추는데 사용. 작은따옴표(')를 사용할지 큰 따옴표(")를 사용할지 indent 값을 2 or 4 등등
+             코드 포맷터 역할
+nest-cli.json - nest 프로젝트를 위해 특정한 설정을 할 수 있는 json파일
+tsconfig.json - 어떻게 타입스크립트를 컴파일 할지 설정
+tsconfig.build.json - tsconfig.json의 연장선상 파일. build를 할 때 필요한 설정들 'excludes'에서는 빌드할 때 
+                      필요없는 파일들 명시
+package.json - build: 운영환경을 위한 빌드
+               format: 린트에러가 났을시 수정
+               start: 앱 시작
+
+
+
+Board 모듈 생성 명령어 - nest g module boards
+                     nest: using nestcli
+                     g: generate
+                     module: schematic that i want to create
+                     boards: name of the schematic
+Board Contollers 모듈 생성 명령어 - nest g controller boards --no-spec
+                                nest: using nestcli
+                                g: generate
+                                controller: controller schematic
+                                boards: name of the schematic
+                                --no-spec: 테스트를 위한 소스 코드 생성 X
+Board Service 생성 - nest g service boards --no-spec
+                    nest: using nestcli
+                    g: generate
+                    controller: controller schematic
+                    boards: name of the schematic
+                    --no-spec: 테스트를 위한 소스 코드 생성 X
+
+DTO(Data Transfer Object) - 계층간 데이터 교환을 위한 객체
+
+
+
+Pipe - @injectable() 데코레이터로 주석이 달린 클래스
+       data transformation / data validation을 위해서 사용
+       Nest 메소드가 호출되기 직전에 파이프를 삽입하고 파이프는 메소드로 향하는 인수를 수신하고 작동
+
+       data transfromation - 입력 데이터를 원하는 형식으로 변환 (ex. 문자열에서 정수로)
+       data validation - 입력 데이터를 평가하고 유효한 경우 변경되지 않은 상태로 전달
+
+Pipe - Handler-level Pipes, Parameter-level Pipes, Global-level Pipes
+       Handler-level Pipes - @UsePipes() 데코레이터를 이용해서 사용
+                             모든 파라미터에 적용
+       Parameter-level Pipes - 파라미터 레벨의 파이프이기에 특정한 파라미터에게만 적용이 되는 파이프
+       Gloabl Pipes - 글로벌 파이프로서 애플리케이션 레벨의 파이프
+                      클라이언트에서 들어오는 모든 요청에 적용
+                      가장 상단 영역인 main.ts에 위치
+
+
+
+TypeORM - node.js에서 실행되고 TypeScript로 작ㄱ성된 객체 관계형 매퍼 라이브러리
+          TypeORM은 MySQL, PostgreSQL, MariaDB, SQLite, MS SQL Server, Oracle, SAP Hana 및 WebSQL등 지원
