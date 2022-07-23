@@ -1,5 +1,8 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm"
 import { Board } from "src/boards/board.entity"
+import * as config from 'config'
+
+const dbConfig = config.get('db')
 
 export const typeORMConfig: TypeOrmModuleOptions = {
     type: 'postgres',

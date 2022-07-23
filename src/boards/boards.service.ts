@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BoardStatus } from './board-status.enum'
-import { v1 as uuid } from 'uuid'
 import { createBoardDto } from './dto/create-board.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BoardRepository } from './board.repository';
 import { Board } from './board.entity';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -13,13 +12,14 @@ export class BoardsService {
         private boardRepository: BoardRepository,
     ) {}
     
-    async createBoard(createBoardDto: createBoardDto): Promise<Board> {
+    async createBoard(createBoardDto: createBoardDto, user: User): Promise<Board> {
         const { title, description } = createBoardDto
 
         const board = this.boardRepository.create({
             title,
             description,
-            status: BoardStatus.PUBLIC
+            status: BoardStatus.PUBLIC,
+            user,
         })
 
         await this.boardRepository.save(board)
@@ -35,8 +35,8 @@ export class BoardsService {
         return found
     }
 
-    async deleteBoard(id: number): Promise<void> {
-        const result = await this.boardRepository.delete(id)
+    async deleteBoard(id: number, user: User): Promise<void> {
+        const result = await this.boardRepository.delete({ id })
 
         if(result.affected === 0) {
             throw new NotFoundException(`Cannot find Board with id ${id}`)
@@ -54,8 +54,16 @@ export class BoardsService {
 
     }
 
-    async getAllBoards(): Promise <Board[]> {
-        return this.boardRepository.find()
+    async getAllBoards(
+        user: User
+    ): Promise <Board[]> {
+        const query = this.boardRepository.createQueryBuilder('board')
+        
+        query.where('board.userId = :userId', {userId: user.id})
+
+        const boards = await query.getMany()
+
+        return boards
     }
 
 }
