@@ -25,7 +25,7 @@ export class AuthService {
             const accessToken = await this.jwtService.sign(payload)
 
 
-            return { accessToken }
+            return { accessToken}
         } else {
             throw new UnauthorizedException('login failed')
         }
