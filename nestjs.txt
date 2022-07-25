@@ -1,37 +1,69 @@
-eslintrc.js - 개발자들이 특정한 규칙을 갖고 코드를 깔끔하게 빌드할 수 있게 도와주는 라이브러리
-              타입스크립트를 쓰는 가이드라인 제시, 문법에 오류가 나면 알려주는 역할 등등
-prettierrc - 주로 코드 형식을 맞추는데 사용. 작은따옴표(')를 사용할지 큰 따옴표(")를 사용할지 indent 값을 2 or 4 등등
-             코드 포맷터 역할
-nest-cli.json - nest 프로젝트를 위해 특정한 설정을 할 수 있는 json파일
-tsconfig.json - 어떻게 타입스크립트를 컴파일 할지 설정
-tsconfig.build.json - tsconfig.json의 연장선상 파일. build를 할 때 필요한 설정들 'excludes'에서는 빌드할 때 
-                      필요없는 파일들 명시
-package.json - build: 운영환경을 위한 빌드
-               format: 린트에러가 났을시 수정
-               start: 앱 시작
+Nest JS 기본 구조
+       eslintrc.js - 개발자들이 특정한 규칙을 갖고 코드를 깔끔하게 빌드할 수 있게 도와주는 라이브러리
+                     타입스크립트를 쓰는 가이드라인 제시, 문법에 오류가 나면 알려주는 역할 등등
+       prettierrc - 주로 코드 형식을 맞추는데 사용. 작은따옴표(')를 사용할지 큰 따옴표(")를 사용할지 indent 값을 2 or 4 등등
+              코드 포맷터 역할
+       nest-cli.json - nest 프로젝트를 위해 특정한 설정을 할 수 있는 json파일
+       tsconfig.json - 어떻게 타입스크립트를 컴파일 할지 설정
+       tsconfig.build.json - tsconfig.json의 연장선상 파일. build를 할 때 필요한 설정들 'excludes'에서는 빌드할 때 
+                            필요없는 파일들 명시
+       package.json - build: 운영환경을 위한 빌드
+                     format: 린트에러가 났을시 수정
+                     start: 앱 시작
+       src-folder - main.ts: 앱을 설정하고 실행
+                    app.module.ts: 앱 모듈을 정의
 
 
+(request) 진입점 server.js -> route 폴더 -> controller 폴더
 
-Board 모듈 생성 명령어 - nest g module boards
+
+NestJS 모듈 - @Module() 데코레이터로 주석이 달린 클래스. 데코레이터는 Nest가 애플리케이션 구조를 구성하는데 사용하는 메타데이터 제공
+
+
+Board Module 생성 명령어 - nest g module boards
                      nest: using nestcli
                      g: generate
                      module: schematic that i want to create
                      boards: name of the schematic
-Board Contollers 모듈 생성 명령어 - nest g controller boards --no-spec
+Board Contollers 생성 명령어 - nest g controller boards --no-spec
                                 nest: using nestcli
                                 g: generate
                                 controller: controller schematic
                                 boards: name of the schematic
                                 --no-spec: 테스트를 위한 소스 코드 생성 X
-Board Service 생성 - nest g service boards --no-spec
-                    nest: using nestcli
-                    g: generate
-                    controller: controller schematic
-                    boards: name of the schematic
-                    --no-spec: 테스트를 위한 소스 코드 생성 X
+Board Service 생성 명령어 - nest g service boards --no-spec
+                         nest: using nestcli
+                         g: generate
+                         service: service schematic
+                         boards: name of the schematic
+                         --no-spec: 테스트를 위한 소스 코드 생성 X
+
+CLI로 명령어 입력시 Controller 만드는 순서
+cli는 먼저 boards 폴더 찾기 -> boards 폴더 안에 controller 파일 생성 -> boards 폴더 안에 module 파일 찾기 -> 
+module 파일 안에다가 contorller 넣어주기
+
+Provider - 대부분의 기본 nest 클래스는 서비스, 레포지토리, 팰토리, 헬퍼 등 프로바디로 취급. 프로바이더의 주요 아이디어는 종속성으로 주입. 
+          즉, 객체는 서로 다양한 관계를 만들 수 있으며 객체의 인스턴스를 '연결'하는 기능은 대부분 nest 런타임 시스템에 위임
+          Provider 등록은 module 파일에서 진행
+
+Service - 소프트웨어 개발내의 공통 개념. @Injectable 데코레이터로 감싸져서 모듈에 제공. 서비스 인스턴스는 애플리케이션 전체에서 사용.
+          컨트롤러에서 데이터의 유효성 체크를 하거나 데이터베이스에 아이템을 생성하는 등의 작업을 하는 부분을 처리
+          
+          constructor 안에서 private을 주면 인수인 파라미터가 프로퍼티로 선언
+
+정리 - 클라이언트에서 요청을 보내면 먼저 컨트롤러로 가며 컨트롤러에서 알밪은 요청경로에 라우팅해서 해당 핸들러로 전달. 
+      요청을 처리하기위해 서비스로 들어가고 그 요청에 맞는 로직을 서비스에서 처리 후, 컨트롤러에 리턴값을 보내고 컨트롤러에서 클라이언트로 결과값 전송 
+      컨트롤러에서는 요청을 처리하고 결과값을 리턴해주는 역할
+
+
+Model 
+       Interface - 변수의 타입만 체크
+	Class - 변수의 타입도 체크, 인스턴스 또한 생성 가능
+
+Controller -> Handle the requests <- Service
+
 
 DTO(Data Transfer Object) - 계층간 데이터 교환을 위한 객체
-
 
 
 Pipe - @injectable() 데코레이터로 주석이 달린 클래스
